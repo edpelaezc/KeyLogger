@@ -13,11 +13,9 @@ includelib \masm32\lib\kernel32.lib
 formatofecha db " dd, MM, yyyy",0
 formatohora db " hh:mm:ss",0
 FileName db "C:\keylogger\test.txt",NULL
-BadText db "Its not ok",0
-OkText db "Its ok",0
-msg db "ESCRIBA SU MENSAJE",0
 espacio db ' ',0
-ent db 0ah
+cr db 0dh
+lf db 0ah
 BytesRead dd 1
 bytesRFecha dd 13
 bytesRHora dd 9
@@ -47,35 +45,25 @@ start:
 	invoke StdIn, addr string, 1
 	mov al, string	; la entrada va al registro "al"
 	cmp al, 20h	;comparar con ' ' 
-	jz hour
+	je hour
 	cmp al, 0ah	;comparar con enter
-	jz hour
-	cmp al, 'X'
-	jz code1
+	je hour
 	jmp readAgain						;de lo contrario, sigue leyendo teclado
 
 	hour:
 		call getHour
-		ret
-
-	readAgain:
-		Invoke WriteFile, hFile, Addr string, BytesRead, Addr BytesWritten, NULL	; llamada al API para escribir en el archivo 	
 		jmp readKeyBoard
 
-
-
-
-    ;invoke MessageBox,NULL,addr OkText,addr OkText,MB_OK	
-
-	
-    invoke ExitProcess,0
+	readAgain:	
+		Invoke WriteFile, hFile, Addr string, BytesRead, Addr BytesWritten, NULL	; llamada al API para escribir en el archivo 	
+		jmp readKeyBoard
+        
 
 
 
 code1:
-    invoke MessageBox,NULL,addr BadText,addr BadText,MB_OK
     invoke ExitProcess,0
-    ret
+   
 
 getHour proc 
 	invoke GetDateFormat, 0, 0,\
@@ -85,17 +73,14 @@ getHour proc
 	invoke GetTimeFormat, 0, 0, \
 	0, addr formatohora, addr horabuf, 50	
 	;escribir el espacio antes de la fecha 
-	Invoke WriteFile, hFile, Addr espacio, BytesRead, Addr BytesWritten, NULL	; llamada al API para escribir en el archivo 
-	;invoke StdOut, addr fechabuf
+	Invoke WriteFile, hFile, Addr espacio, BytesRead, Addr BytesWritten, NULL	; llamada al API para escribir en el archivo 	
 	Invoke WriteFile, hFile, Addr fechabuf, bytesRFecha, Addr bytesWFecha, NULL	; llamada al API para escribir en el archivo 
-
 	;escribir el espacio antes de la hora 
 	Invoke WriteFile, hFile, Addr espacio, BytesRead, Addr BytesWritten, NULL	; llamada al API para escribir en el archivo 
-	;invoke StdOut, addr horabuf 
 	Invoke WriteFile, hFile, Addr horabuf, bytesRHora, Addr bytesWHora, NULL	; llamada al API para escribir en el archivo 
-
 	;escribir enter para finalizar la linea
-	Invoke WriteFile, hFile, Addr ent, BytesRead, Addr BytesWritten, NULL	; llamada al API para escribir en el archivo 
+	Invoke WriteFile, hFile, Addr lf, BytesRead, Addr BytesWritten, NULL	; llamada al API para escribir en el archivo 
+	Invoke WriteFile, hFile, Addr cr, BytesRead, Addr BytesWritten, NULL	; llamada al API para escribir en el archivo 
 	ret
 getHour endp 
 
