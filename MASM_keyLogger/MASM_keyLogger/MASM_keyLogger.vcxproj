@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{D0C181C7-AD1D-4C0E-95AB-D8CF25A7BBDB}</ProjectGuid>
-    <RootNamespace>KeyLoggerMASM</RootNamespace>
+    <ProjectGuid>{2AED58AB-50FF-4F4B-81DB-63111568D449}</ProjectGuid>
+    <RootNamespace>MASMkeyLogger</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -119,7 +119,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <MASM Include="code.asm" />
+    <MASM Include="impKeyLogger.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

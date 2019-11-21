@@ -1,0 +1,3 @@
+﻿  Assembling impKeyLogger.asm...
+\masm32\include\masm32rt.inc(33): warning A4011: multiple .MODEL directives found : .MODEL ignored
+  MASM_keyLogger.vcxproj -> C:\GitHub\KeyLogger\MASM_keyLogger\Debug\MASM_keyLogger.exe

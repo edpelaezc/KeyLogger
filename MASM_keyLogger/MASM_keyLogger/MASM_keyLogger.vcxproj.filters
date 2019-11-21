@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="code.asm">
+    <MASM Include="impKeyLogger.asm">
       <Filter>Archivos de origen</Filter>
     </MASM>
   </ItemGroup>
