@@ -64,9 +64,6 @@ MAIN proc
 		Invoke WriteFile, hFile, Addr string, BytesRead, Addr BytesWritten, NULL	; llamada al API para escribir en el archivo 	
 		jmp readKeyBoard
 
-
-
-
 	code1:
 	invoke ExitProcess,0
 
